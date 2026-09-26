@@ -1,0 +1,48 @@
+
+
+.basic_radio {
+    max-width: 9rem;
+    width: 100% !important;
+    border: 2px solid #bcbcbc;
+    margin-top : 0.5rem;
+    border-radius: 20px;
+    padding: 0.05rem 0.5rem;
+    color: #bcbcbc;
+    margin-left: 0.1rem;
+}
+
+.select_radio_button {
+    border: 2px solid #EC4700;
+    color: #EC4700
+}
+
+.container {
+    max-width: 500px!important;
+    /* padding: 1rem !important; */
+}
+
+.paper {
+    width: fit-content;
+    padding: 1rem;
+}
+
+.image {
+    max-width: 18rem;
+    width: 100%;
+    height: 100%;
+    max-height: 8rem;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.edit_image{
+    position: absolute;
+    bottom :13px;
+    right : 4px;
+    background-color: #bcbcbc;
+    opacity: 80%;
+}
+
+.image_container{
+    position: relative;
+}

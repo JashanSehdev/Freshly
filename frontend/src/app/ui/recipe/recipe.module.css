@@ -1,0 +1,21 @@
+
+.container {
+    max-width: 850px;
+    margin: auto;
+    margin-top: 1rem;
+}
+
+.image {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.tags{
+    display: flex;
+    gap: 0.5rem;
+    margin: 2rem 0;
+}
+
+.details {
+    margin-top: 2rem
+}

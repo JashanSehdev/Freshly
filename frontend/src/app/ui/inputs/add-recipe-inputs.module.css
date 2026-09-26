@@ -1,0 +1,21 @@
+.input_container {
+  padding: 0.2rem;
+  border-radius: 10px;
+  border: 2px solid #f4f4f4;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input {
+  background: transparent;
+  outline: none;
+  border: none;
+  padding: 0.5rem;
+}
+
+.container {
+    width: 100%;
+    margin: 0.5rem;
+}

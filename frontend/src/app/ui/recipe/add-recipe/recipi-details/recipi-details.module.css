@@ -1,0 +1,15 @@
+
+.paper {
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.container {
+    width: 100%;
+}
+
+.input_container{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
