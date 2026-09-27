@@ -1,7 +1,7 @@
 import { Box, FormHelperText, Typography } from "@mui/material";
 import styles from './add-recipe-inputs.module.css'
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { RecipeInputType, ValidNames } from "../recipe/add-recipe/add-recipe.type";
+import { FieldErrors, FieldPath, UseFormRegister, get } from "react-hook-form";
+import { RecipeInputType } from "../recipe/add-recipe/add-recipe.type";
 
 type Prop = {
     label ?: string,
@@ -9,12 +9,13 @@ type Prop = {
     suffix ?: string
     register : UseFormRegister<RecipeInputType>
     errors : FieldErrors<RecipeInputType>
-    name : ValidNames
+    name : FieldPath<RecipeInputType>
 }
 
 
 export default function AddFormInput (prop : Prop) {
     const {register} = prop
+    const error = get(prop.errors, prop.name)
     return(
     <Box className={styles.container}>
         {
@@ -39,9 +40,7 @@ export default function AddFormInput (prop : Prop) {
             
            
         </Box>
-        {
-            prop.errors?.[prop.name] && <FormHelperText>{prop.errors?.[prop.name]?.message}</FormHelperText>
-        }
+            {error && <FormHelperText error>{error.message}</FormHelperText>}
         
     </Box>
 )

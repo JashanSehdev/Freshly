@@ -1,4 +1,5 @@
-import z from "zod";
+import { Category } from "@mui/icons-material";
+import z, { string } from "zod";
 
 export interface Ingredient {
   name: string;
@@ -32,20 +33,55 @@ export interface Recipe {
   isPublic : boolean
 }
 
-export const recipiSchema = z.object({
-    title : z.string().min(1, 'Recipi name reuired'),
-    servings : z.number().min(1, 'number of servings should be greater than 0'),
-    cookTimeMinutes :  z.number().min(1, 'Cook time should be greater than 0'),
-    imageUrl: z.string().url('image required'),
-    isPublic : z.boolean()
+const ingredientSchema = z.object({
+   ingredient: z.string()
+})
+export type IngredientType = z.infer<typeof ingredientSchema>
 
+const directionSchema = z.object({
+  direction : z.string()
 })
 
-export type RecipeInputType = z.infer<typeof recipiSchema>
+
+import { z } from "zod";
+
+export const recipiSchema = z.object({
+  title: z.string().min(1, "Recipe name required"),
+
+  servings: z.coerce
+    .number()
+    .min(1, "Number of servings should be greater than 0"),
+
+  cookTimeMinutes: z.coerce
+    .number()
+    .min(1, "Cook time should be greater than 0"),
+
+  imageUrl: z.string().url("Invalid image URL"),
+
+  isPublic: z.boolean(),
+
+  ingredients: z.array(ingredientSchema),
+
+  directions: z.array(directionSchema),
+
+  tags: z.array(z.string()),
+
+  category: z.string().min(1, "Category required"),
+});
+
+export type RecipeInputType = z.input<typeof recipiSchema>;
+
+export type RecipeOutputType = z.output<typeof recipiSchema>;
+
+
 
 export type  ValidNames = 'title'
     | 'servings'
     | 'cookTimeMinutes'
     | 'imageUrl'
     | 'isPublic'
+    | 'ingredient'
+    | 'instructions'
+    | 'direction'
+    | 'tags'
   

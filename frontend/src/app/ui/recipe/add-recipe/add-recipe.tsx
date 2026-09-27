@@ -1,40 +1,63 @@
-'use client'
-import { Box, useFormControl } from "@mui/material";
+"use client";
+import { Box, Button } from "@mui/material";
 import RecipiGeneralInfo from "./recipe-general-information/recipe-general-information";
 import RecipiDetails from "./recipi-details/recipi-details";
-import styles from './add-recipe.module.css'
-import { useForm, SubmitHandler } from "react-hook-form"
-import { RecipeInputType } from "./add-recipe.type";
+import styles from "./add-recipe.module.css";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  RecipeInputType,
+  RecipeOutputType,
+  recipiSchema,
+} from "./add-recipe.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function AddRecipe () {
-     const {
+export default function AddRecipe() {
+  const {
     register,
     handleSubmit,
     watch,
     setValue,
     getValues,
+    control,
     formState: { errors },
-  } = useForm<RecipeInputType>({
+  } = useForm<RecipeInputType, unknown, RecipeOutputType>({
+    resolver: zodResolver(recipiSchema),
     defaultValues: {
-        isPublic: false
-    }
-  })
-  const onSubmit: SubmitHandler<RecipeInputType> = (data : RecipeInputType) => console.log(data)
+      title: "",
+      servings: "",
+      cookTimeMinutes: "",
+      imageUrl: "",
+      isPublic: false,
+      ingredients: [],
+      directions: [],
+      tags: [],
+      category: "",
+    },
+  });
+  const onSubmit: SubmitHandler<RecipeInputType> = (data: RecipeInputType) =>
+    console.log(data);
 
-  console.log(watch())
-    return(
-        <form onSubmit={handleSubmit(onSubmit)}>
-        <Box className={styles.container}>
-            
-            <RecipiGeneralInfo
-                register ={register}
-                errors = {errors}
-                setValue={setValue}
-                getValue={getValues}
-            />
-            {/* <RecipiDetails/> */}
+  console.log(errors)
 
-        </Box>
-        </form>
-    )
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box className={styles.publish_bar}>
+        <p></p>
+        <Button type="submit" variant="contained">
+          Publish
+        </Button>
+      </Box>
+      <Box className={styles.container}>
+        <RecipiGeneralInfo
+          watch={watch}
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          getValue={getValues}
+          control={control}
+        />
+        <RecipiDetails register={register} control={control} errors={errors} />
+      </Box>
+    </form>
+  );
 }

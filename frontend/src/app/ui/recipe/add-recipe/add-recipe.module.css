@@ -5,3 +5,10 @@
     max-width: 1128px;
     margin: auto;
 }
+
+.publish_bar{
+    max-width: 1128px;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+}
