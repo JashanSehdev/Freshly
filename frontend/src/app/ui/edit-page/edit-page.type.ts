@@ -62,13 +62,3 @@ export type RecipeInputType = z.input<typeof recipiSchema>;
 
 export type RecipeOutputType = z.output<typeof recipiSchema>;
 
-export type ValidNames =
-  | "title"
-  | "servings"
-  | "cookTimeMinutes"
-  | "imageUrl"
-  | "isPublic"
-  | "ingredient"
-  | "instructions"
-  | "direction"
-  | "tags";
