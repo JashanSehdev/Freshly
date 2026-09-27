@@ -10,14 +10,20 @@ import {
   recipiSchema,
 } from "./add-recipe.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createRecipe } from "@/features/recipe-slice/handle-recipe/recipe.action";
+import { useAppDispatch } from "@/features/store";
+import { enqueueSnackbar } from "notistack";
 
-export default function AddRecipe() {
+export default function AddRecipePage() {
+
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     getValues,
+    reset,
     control,
     formState: { errors },
   } = useForm<RecipeInputType, unknown, RecipeOutputType>({
@@ -34,13 +40,17 @@ export default function AddRecipe() {
       category: "",
     },
   });
-  const onSubmit: SubmitHandler<RecipeInputType> = (data: RecipeInputType) =>
+  const onSubmit: SubmitHandler<RecipeOutputType> = async(data: RecipeOutputType) => {
     console.log(data);
+    await  dispatch(createRecipe(data))
+    reset()
+    enqueueSnackbar('Recipe published', {variant: 'success'})
+  }
 
-  console.log(errors)
+  console.log("errors" , errors)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} >
       <Box className={styles.publish_bar}>
         <p></p>
         <Button type="submit" variant="contained">

@@ -1,31 +1,20 @@
-
-export interface Ingredient {
-  name: string;
-  amount: number;
-  unit: string; // e.g., "g", "ml", "tbsp", "cups", "whole"
-  notes?: string; // e.g., "finely chopped", "at room temperature"
+interface Ingredient {
+  ingredient: string;
 }
 
-export interface InstructionStep {
-  stepNumber: number;
-  instruction: string;
-  durationInMinutes?: number;
+interface Direction {
+  direction: string;
 }
-
-export type Difficulty = "easy" | "medium" | "hard";
 
 export interface Recipe {
-  id: string | number;
+  id: number;
   title: string;
-  description: string;
-  imageUrl?: string;
-  prepTimeMinutes: number;
-  cookTimeMinutes: number;
   servings: number;
-  difficulty: Difficulty;
-  cuisine?: string; // e.g., "Italian", "Mexican", "Indian"
-  tags: string[]; // e.g., ["vegetarian", "quick", "gluten-free"]
+  cookTimeMinutes: number;
+  imageUrl: string;
+  isPublic: boolean;
   ingredients: Ingredient[];
-  instructions: InstructionStep[] | string[];
-  createdAt?: string; // ISO date string
-}
+  directions: Direction[];
+  tags: string[];
+  category: string;
+}   

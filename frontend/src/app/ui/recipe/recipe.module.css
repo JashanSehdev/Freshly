@@ -17,5 +17,13 @@
 }
 
 .details {
-    margin-top: 2rem
+    margin: 2rem 0.5rem
+}
+
+.direction{
+    margin-bottom: 1rem;
+}
+
+.directions_list{
+  margin: 0.7rem 2rem;;
 }

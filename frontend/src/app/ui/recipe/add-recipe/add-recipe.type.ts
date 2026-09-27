@@ -30,42 +30,31 @@ export interface Recipe {
   ingredients: Ingredient[];
   instructions: InstructionStep[] | string[];
   createdAt?: string; // ISO date string
-  isPublic : boolean
+  isPublic: boolean;
 }
 
 const ingredientSchema = z.object({
-   ingredient: z.string()
-})
-export type IngredientType = z.infer<typeof ingredientSchema>
+  ingredient: z.string(),
+});
+export type IngredientType = z.infer<typeof ingredientSchema>;
 
 const directionSchema = z.object({
-  direction : z.string()
-})
-
-
-import { z } from "zod";
+  direction: z.string(),
+});
 
 export const recipiSchema = z.object({
   title: z.string().min(1, "Recipe name required"),
-
   servings: z.coerce
     .number()
     .min(1, "Number of servings should be greater than 0"),
-
   cookTimeMinutes: z.coerce
     .number()
     .min(1, "Cook time should be greater than 0"),
-
   imageUrl: z.string().url("Invalid image URL"),
-
   isPublic: z.boolean(),
-
-  ingredients: z.array(ingredientSchema),
-
-  directions: z.array(directionSchema),
-
-  tags: z.array(z.string()),
-
+  ingredients: z.array(ingredientSchema).min(1,'Atleast one Ingredient required'),
+  directions: z.array(directionSchema).min(1,'Atleast one direction required'),
+  tags: z.array(z.string()).min(1,'Atleast one tag required'),
   category: z.string().min(1, "Category required"),
 });
 
@@ -73,15 +62,13 @@ export type RecipeInputType = z.input<typeof recipiSchema>;
 
 export type RecipeOutputType = z.output<typeof recipiSchema>;
 
-
-
-export type  ValidNames = 'title'
-    | 'servings'
-    | 'cookTimeMinutes'
-    | 'imageUrl'
-    | 'isPublic'
-    | 'ingredient'
-    | 'instructions'
-    | 'direction'
-    | 'tags'
-  
+export type ValidNames =
+  | "title"
+  | "servings"
+  | "cookTimeMinutes"
+  | "imageUrl"
+  | "isPublic"
+  | "ingredient"
+  | "instructions"
+  | "direction"
+  | "tags";

@@ -1,5 +1,5 @@
 import AddFormInput from "@/app/ui/inputs/add-recipe-inputs";
-import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Button, FormHelperText, IconButton, Paper, Typography } from "@mui/material";
 import styles from "./recipi-details.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -52,6 +52,10 @@ export default function RecipiDetails({ control, register, errors }: Prop) {
             </IconButton>
           </Box>
         ))}
+
+         {
+          errors.ingredients && (<FormHelperText error>{errors.ingredients.root?.message}</FormHelperText>)
+        }
         <Button
           type="button"
           onClick={() => append({ ingredient: "" })}
@@ -77,7 +81,9 @@ export default function RecipiDetails({ control, register, errors }: Prop) {
             </IconButton>
           </Box>
         ))}
-
+        {
+          errors.directions && (<FormHelperText error>{errors.directions.root?.message}</FormHelperText>)
+        }
         <Button
           onClick={() => appendDirection({ direction: "" })}
           variant="outlined"
