@@ -30,9 +30,9 @@ export default function FilterDrawer() {
 
   const {
     handleSubmit,
-    watch,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm<FilterType>({
     resolver: zodResolver(filterSchema),
@@ -59,6 +59,7 @@ export default function FilterDrawer() {
             setValue={setValue}
             getValue={getValues}
             errors={errors}
+            watch={watch}
         />
 
         <CookingTimeFilter

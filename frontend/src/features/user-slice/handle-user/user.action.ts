@@ -61,3 +61,20 @@ export const getUserLogout = createAsyncThunk("users/logout", async (_, thunkApi
     return thunkApi.rejectWithValue("Something went wrong");
   }
 })
+
+
+type GoogleLoginType = Omit<User, "password">
+export const googleLoginAsync = createAsyncThunk(
+  "users/logout",
+  async(data : GoogleLoginType, thunkApi) => {
+    try{
+      const response = await api.post('/users/google', data);
+      enqueueSnackbar("User Logged In", {variant:'success'})
+      return response.data;
+    } catch(error: unknown) {
+      if (axios.isAxiosError(error)) {
+      return thunkApi.rejectWithValue(error.response?.data?.message ?? "Something went wrong");
+    }
+    }
+  }
+)

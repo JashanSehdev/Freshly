@@ -7,11 +7,16 @@ import Link from "next/link";
 import { SignUpInputType, signupSchema } from "./signup.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "@/features/store";
-import { getUserAsync, signUpAsync } from "@/features/user-slice/handle-user/user.action";
+import {
+  getUserAsync,
+  googleLoginAsync,
+  signUpAsync,
+} from "@/features/user-slice/handle-user/user.action";
 import { redirect } from "next/navigation";
+import { handleGoogleLogin } from "@/actions/auth.action";
 
 export default function Page() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const loginImage =
     "https://imgs.search.brave.com/upaDKd9NNWpTUFEFHtxJm3Tn6YqpmUuYu_NNwvXMtr0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWcu/bWFnbmlmaWMuY29t/L2ZyZWUtcGhvdG8v/dG9wLXZpZXctdGFi/bGUtZnVsbC1mb29k/XzIzLTIxNDkyMDky/MzAuanBnP2dhPUdB/MS4xLjE2MjMxMzQ5/Ny4xNzkwNTUxODQ0/JnNlbXQ9YWlzX2h5/YnJpZCZ3PTc0MCZx/PTgw";
 
@@ -23,10 +28,30 @@ export default function Page() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SignUpInputType> = async (data: SignUpInputType) => {
-    await dispatch(signUpAsync(data))
-    await dispatch(getUserAsync())
-    redirect("/")
+  const handleGoogleButton = async () => {
+    try {
+      const data = await handleGoogleLogin();
+      if (!data.username || !data.email)
+        throw new Error("Username or password not found from Google");
+      const sendData = {
+        username: data.username,
+        email: data.email,
+      };
+      await dispatch(googleLoginAsync(sendData));
+      await dispatch(getUserAsync());
+      redirect("/")
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const onSubmit: SubmitHandler<SignUpInputType> = async (
+    data: SignUpInputType,
+  ) => {
+    await dispatch(signUpAsync(data));
+    await dispatch(getUserAsync());
+    redirect("/");
   };
 
   return (
@@ -38,7 +63,7 @@ export default function Page() {
           <p>Make your</p> <p>perfect Food</p>{" "}
         </h2>
         <Box className={styles.googleButton}>
-          <Button>Google Button</Button>
+          <Button onClick={handleGoogleButton}>Google Button</Button>
         </Box>
 
         <p className={styles.divider}>or</p>
@@ -49,7 +74,7 @@ export default function Page() {
               fullWidth
               error={!!errors.username}
               helperText={errors.username?.message}
-              {...register('username')}
+              {...register("username")}
             />
           </Box>
 
@@ -59,7 +84,7 @@ export default function Page() {
               fullWidth
               error={!!errors.email}
               helperText={errors.email?.message}
-              {...register('email')}
+              {...register("email")}
             />
           </Box>
           <Box>
@@ -69,7 +94,7 @@ export default function Page() {
               fullWidth
               error={!!errors.password}
               helperText={errors.password?.message}
-              {...register('password')}
+              {...register("password")}
             />
           </Box>
           <Box className={styles.submitButton}>
@@ -84,7 +109,12 @@ export default function Page() {
           </Box>
         </form>
       </Box>
-      <Box component={"img"} className={styles.image} src={loginImage} alt="Login Image" />
+      <Box
+        component={"img"}
+        className={styles.image}
+        src={loginImage}
+        alt="Login Image"
+      />
     </Box>
   );
 }

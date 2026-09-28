@@ -10,11 +10,7 @@ import {
   recipiSchema,
 } from "./edit-page.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createRecipe,
-  fetchRecipeById,
-  updateRecipe,
-} from "@/features/recipe-slice/handle-recipe/recipe.action";
+import { updateRecipe } from "@/features/recipe-slice/handle-recipe/recipe.action";
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import { enqueueSnackbar } from "notistack";
 import { redirect } from "next/navigation";
@@ -25,15 +21,15 @@ type Prop = {
 };
 export default function EditRecipePage({ id }: Prop) {
   const recipe = useAppSelector((state) => state.recipe.recipe);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.User);
   console.log(recipe);
 
   useEffect(() => {
-    if(user?.id !== recipe?.user.id) {
-      redirect("/")
+    if (user?.id !== recipe?.user?.id) {
+      redirect("/");
     }
-  },[])
+  }, []);
 
   const handleCancel = () => {
     reset();
@@ -45,20 +41,22 @@ export default function EditRecipePage({ id }: Prop) {
     handleSubmit,
     watch,
     setValue,
-    getValues,
     reset,
     control,
     formState: { errors },
   } = useForm<RecipeInputType, unknown, RecipeOutputType>({
     resolver: zodResolver(recipiSchema),
-    defaultValues: recipe ?? {}
+    defaultValues: {
+      ...recipe,
+      isPublic: recipe?.isPublic ?? true,
+    },
   });
   const onSubmit: SubmitHandler<RecipeOutputType> = async (
     data: RecipeOutputType,
   ) => {
-    console.log(data);
-    await dispatch(updateRecipe({id, data}));
-    reset();
+    console.log("SUBMIT DATA:", data);
+    console.log("isPublic:", data.isPublic);
+    await dispatch(updateRecipe({ id, data }));
     enqueueSnackbar("Recipe published", { variant: "success" });
   };
 
@@ -83,7 +81,6 @@ export default function EditRecipePage({ id }: Prop) {
           register={register}
           errors={errors}
           setValue={setValue}
-          getValue={getValues}
           control={control}
         />
         <RecipiDetails register={register} control={control} errors={errors} />

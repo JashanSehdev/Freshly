@@ -12,11 +12,11 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import clsx from "clsx";
 import {
   FieldErrors,
   UseFormGetValues,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import styles from "./category-selector.module.css";
 import { foodCategories } from "@/data/food-categories";
@@ -26,8 +26,9 @@ type Prop = {
   setValue: UseFormSetValue<FilterType>;
   getValue: UseFormGetValues<FilterType>;
   errors: FieldErrors<FilterType>;
+  watch : UseFormWatch<FilterType>
 };
-export default function CategorySelector({ setValue, getValue, errors }: Prop) {
+export default function CategorySelector({ setValue, errors, watch }: Prop) {
   const [filteredCategories, setFilteredCategories] =
     useState<string[]>(foodCategories);
 
@@ -60,7 +61,7 @@ export default function CategorySelector({ setValue, getValue, errors }: Prop) {
           <Typography>Set Category as</Typography>
           <FormControl>
             <RadioGroup
-              value={getValue("category")}
+              value={watch("category")}
               onChange={(e) => {
                 const value = e.target.value;
                 setValue("category", value);
@@ -79,10 +80,7 @@ export default function CategorySelector({ setValue, getValue, errors }: Prop) {
                     value={item}
                     control={<Radio />}
                     label={item}
-                    className={clsx(styles.basic_radio, {
-                      [styles.select_radio_button]:
-                        getValue("category") === item,
-                    })}
+              
                   />
                 ))}
               </Box>

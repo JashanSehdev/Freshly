@@ -21,7 +21,7 @@ export const userSlice = createSlice({
             username : action.payload.username
         }
         state.User = fetchedUser
-       })
+       });
     }
 })
 

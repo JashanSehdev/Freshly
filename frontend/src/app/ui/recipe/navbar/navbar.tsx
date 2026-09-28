@@ -7,12 +7,23 @@ import logo from "@/../public/logo.png";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import AccountMenu from "./account-menu/account-menu";
+import clsx from "clsx";
 
 const avatar =
   "https://imgs.search.brave.com/ohAuTp3hK89mgurwQr18x7s-vbzmC8bs0Cu6ZuQZSlQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjcv/OTUxLzEzNy9zbWFs/bC9zdHlsaXNoLXNw/ZWN0YWNsZXMtZ3V5/LTNkLWF2YXRhci1j/aGFyYWN0ZXItaWxs/dXN0cmF0aW9ucy1w/bmcucG5n";
 export default function Navbar() {
   const pathname = usePathname();
 
+  const navlinks = [{
+
+    name : 'Recipe',
+    link : '/'
+  },
+  {
+    name : 'My Collection',
+    link : '/my-collection'
+  },
+]
   useEffect(() => {
     console.log(pathname);
   }, [pathname]);
@@ -24,14 +35,12 @@ export default function Navbar() {
             <Image src={logo} alt="logo" className={styles.image} />
           </Link>
 
-          {["Recipes", "Categories", "Favourites"].map((item) => (
-            <Link href={"#"} key={item} className={styles.link}>
-              <Typography variant="body1">{item}</Typography>
+          {navlinks.map((item) => (
+            <Link href={item.link} key={item.name} className={clsx( styles.link, {[styles.active_link] : pathname === item.link})}>
+              <Typography variant="body1">{item.name}</Typography>
             </Link>
           ))}
-          <Link href={"/my-collection"} className={styles.link}>
-              <Typography variant="body1">My collection</Typography>
-            </Link>
+     
         </Box>
             {
               pathname==='login' || pathname ==='signup' ? <Box> </Box> : (

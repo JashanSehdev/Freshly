@@ -1,14 +1,22 @@
 "use client";
-import { useAppSelector } from "@/features/store";
+import { useAppDispatch, useAppSelector } from "@/features/store";
 import styles from "./recipe.module.css";
 import { Box, Button, Chip, List, ListItem, ListItemIcon, Typography } from "@mui/material";
 import Link from "next/link";
+import { deleteRecipeAsync } from "@/features/recipe-slice/handle-recipe/recipe.action";
+import { redirect } from "next/navigation";
 
 export default function RecipePage({ id }: { id: number }) {
   const recipe = useAppSelector((state) => state.recipe.recipe);
   const user = useAppSelector((state) => state.user.User);
+  const dispatch = useAppDispatch()
   console.log("User" , user)
   console.log("recipe", recipe)
+
+  const handleDelete = () => {
+    dispatch(deleteRecipeAsync(id));
+    redirect("/")
+  }
   return (
     <Box className={styles.container}>
       <Box>
@@ -16,9 +24,14 @@ export default function RecipePage({ id }: { id: number }) {
           {recipe?.title}
         </Typography>
         {user?.id === recipe?.user?.id && (
+          <Box>
+           
           <Link href={`/${id}/edit`}>
             <Button>Edit</Button>
           </Link>
+     
+            <Button onClick={handleDelete}>Delete</Button>
+           </Box>
         )}
       </Box>
 

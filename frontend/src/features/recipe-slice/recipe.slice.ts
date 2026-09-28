@@ -1,6 +1,6 @@
 import { Recipe } from "@/app/type/recipe.type";
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllRecipes, FetchRecipeByFilters, fetchRecipeById, updateRecipe } from "./handle-recipe/recipe.action";
+import { deleteRecipeAsync, fetchAllRecipes, FetchRecipeByFilters, fetchRecipeById, updateRecipe } from "./handle-recipe/recipe.action";
 
 type InitialState = {
     recipe : Recipe | null;
@@ -35,6 +35,11 @@ export const recipeSlice = createSlice({
                 else return item
             })
             state.recipe = action.payload
+        });
+        builder.addCase(deleteRecipeAsync.fulfilled, (state, action) => {
+            state.recipes.filter((item) =>  {
+                return item.id !== action.payload
+            })
         })
     }
 })

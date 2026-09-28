@@ -115,3 +115,17 @@ export const updateRecipe = createAsyncThunk(
     }
   }
 )
+
+export const deleteRecipeAsync = createAsyncThunk(
+  'recipes/delete',
+  async(id :number, thunkApi) => {
+    try {
+      const response = await api.delete(`/recipes/${id}`);
+      return response.data
+    } catch(error : any) {
+      return thunkApi.rejectWithValue(
+        error.response?.data || "Something went wrong",
+      )
+    }
+  }
+)

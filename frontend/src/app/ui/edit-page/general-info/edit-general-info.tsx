@@ -14,7 +14,7 @@ import clsx from "clsx";
 import styles from "./edit-general-info.module.css";
 
 import { RecipeInputType } from '../edit-page.type';
-import { Control, FieldErrors, FieldName, UseFormGetValues, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, FieldErrors, FieldName, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import CloudinaryUploader from "@/app/ui/cloudinary-widget/cloudinary-widget";
 import TagInput from "@/app/ui/inputs/tag-input/tag-input";
 import CategoryInput from "@/app/ui/inputs/category-input/category.-input";
@@ -52,12 +52,13 @@ type Prop = {
   register: UseFormRegister<RecipeInputType>;
   errors: FieldErrors<RecipeInputType>;
   setValue: UseFormSetValue<RecipeInputType>;
-  getValue : UseFormGetValues<RecipeInputType>;
   watch : UseFormWatch<RecipeInputType>
   control: Control<RecipeInputType>
 };
 
-export default function RecipiGeneralInfo({ register, errors, setValue, getValue, watch, control }: Prop) {
+export default function RecipiGeneralInfo({ register, errors, setValue, watch, control }: Prop) {
+  const isPublic = watch("isPublic");
+  
   return (
     <Box className={styles.container}>
       <Typography variant="h6" sx={{ color: "text.secondary" }}>
@@ -67,7 +68,7 @@ export default function RecipiGeneralInfo({ register, errors, setValue, getValue
         <Box className={styles.image_container}>
           <Box
             component={"img"}
-            src={watch().imageUrl || image_placeholder}
+            src={watch("imageUrl") || image_placeholder}
             className={styles.image}
           />
           <input type="text" hidden {...register("imageUrl")} />
@@ -88,41 +89,42 @@ export default function RecipiGeneralInfo({ register, errors, setValue, getValue
           />
         ))}
 
-        <Box>
-          <Typography>Set recipe as</Typography>
-          <FormControl>
-            <RadioGroup
-              value={getValue('isPublic')}
-          
-        
-              onChange={(e) => {
-                const value = e.target.value === "true";
-                setValue("isPublic", value);
-              }}
-            >
-              <Box>
+          <Box>
+            <Typography>Set recipe as</Typography>
+            <FormControl>
+              <RadioGroup
+                value={isPublic === undefined ? "" : String(isPublic)}
+                onChange={(e) => {
+                  const isPublicValue = e.target.value === "true";
+                  setValue("isPublic", isPublicValue, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                }}
+              >
+                <Box>
+                  <FormControlLabel
+                    value={"true"}
+                    control={<Radio />}
+                    label="Public"
+                    className={clsx(styles.basic_radio, {
+                      [styles.select_radio_button]: isPublic === true,
+                    })}
+                  />
+                </Box>
                 <FormControlLabel
-                  value={"true"}
+                  value={"false"}
                   control={<Radio />}
-                  label="Public"
+                  label="Private"
                   className={clsx(styles.basic_radio, {
-                    [styles.select_radio_button]: getValue('isPublic') === true,
+                    [styles.select_radio_button]: isPublic === false,
                   })}
                 />
-              </Box>
-              <FormControlLabel
-                value={"false"}
-                control={<Radio />}
-                label="Private"
-                className={clsx(styles.basic_radio, {
-                  [styles.select_radio_button]: getValue('isPublic') !== true,
-                })}
-              />
-            </RadioGroup>
-            {
-              errors.isPublic && <FormHelperText error>{errors.isPublic.message}</FormHelperText>
-            }
-          </FormControl>
+              </RadioGroup>
+              {
+                errors.isPublic && <FormHelperText error>{errors.isPublic.message}</FormHelperText>
+              }
+            </FormControl>
         </Box>
         <TagInput errors={errors} watch={watch} setValue={setValue}/>
         <CategoryInput register={register} errors={errors} control={control} name="category" label="category" placeholder="eg: Indian"/>

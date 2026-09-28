@@ -8,6 +8,7 @@ import { RecipeFilterDto } from './dto/filtered-recipe-dto.js';
 import type { Request } from 'express';
 import { PassThrough } from 'stream';
 import { User } from '../users/entities/user.entity.js';
+import { GoogleLoginDto } from '../users/dto/google-login.dto.js';
 
 @Injectable()
 export class RecipesService {
@@ -34,13 +35,10 @@ export class RecipesService {
     )
   }
 
-  if (filters.userId) {
-    query.andWhere(
-      "user.id = :userId",
-      {
-        userId :filters.userId
-      } 
-    )
+   if (filters.userId) {
+    query.andWhere("user.id = :userId", { userId: filters.userId });
+  } else {
+    query.andWhere("recipe.isPublic = :isPublic", { isPublic: true });
   }
   if (filters.category) {
     query.andWhere(
@@ -84,7 +82,9 @@ export class RecipesService {
     return await this.recipeRepository.findOneBy({id});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} recipe`;
+  async remove(id: number) {
+    const removed_recipe = await this.recipeRepository.delete({id});
+    return removed_recipe
   }
+
 }

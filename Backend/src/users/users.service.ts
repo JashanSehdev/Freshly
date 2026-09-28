@@ -14,6 +14,7 @@ import { NotFoundError } from 'rxjs';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { GoogleLoginDto } from './dto/google-login.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -101,5 +102,26 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  
+  async googleLogin (googleLoginDto :GoogleLoginDto) {
+    let user = await this.userRepository.findOne({
+      where: {
+        email: googleLoginDto.email,
+      },
+    });
+
+    if (!user) {
+      const userData = this.userRepository.create({
+      ...googleLoginDto,
+      password: "Google Auth",
+    });
+      user = await this.userRepository.save(userData);
+    }
+    const payload = { username: user.username, id: user.id };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }

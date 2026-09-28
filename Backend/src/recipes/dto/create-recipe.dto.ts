@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -58,4 +59,8 @@ export class CreateRecipeDto {
   @IsString()
   @IsNotEmpty()
   category: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isPublic: boolean;
 }

@@ -8,9 +8,11 @@ import Link from "next/link";
 import { LoginInputType, loginSchema } from "./types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "@/features/store";
-import { getUserAsync, LoginAsync } from "@/features/user-slice/handle-user/user.action";
+import { getUserAsync, googleLoginAsync, LoginAsync } from "@/features/user-slice/handle-user/user.action";
 import Cookies from 'js-cookie';
 import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
+import { handleGoogleLogin } from "@/actions/auth.action";
 
 
 export default function LoginPage() {
@@ -18,10 +20,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const dispatch = useAppDispatch()
+  const router = useRouter()
    const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginInputType>({
     resolver :zodResolver(loginSchema)
@@ -31,8 +33,26 @@ export default function LoginPage() {
     await dispatch(LoginAsync(data));
     await dispatch(getUserAsync())
     setLoading(false)
-    redirect('/')
+    router.refresh()
   }
+
+    const handleGoogleButton = async () => {
+      try {
+        const data = await handleGoogleLogin();
+        if (!data.username || !data.email)
+          throw new Error("Username or password not found from Google");
+        const sendData = {
+          username: data.username,
+          email: data.email,
+        };
+        await dispatch(googleLoginAsync(sendData));
+        await dispatch(getUserAsync());
+        redirect("/")
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
 
   return (
     <Box className={styles.outerBox}>
@@ -43,7 +63,7 @@ export default function LoginPage() {
           <p>Make your</p> <p>perfect Food</p>{" "}
         </h2>
         <Box className={styles.googleButton}>
-            <Button>Google Button</Button>
+            <Button onClick={handleGoogleButton}>Google Button</Button>
         </Box>
 
         <p className={styles.divider}>or</p>

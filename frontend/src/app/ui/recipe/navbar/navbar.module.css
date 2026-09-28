@@ -24,6 +24,9 @@
     text-decoration: none;
     color: #1F1D1B;
 }
+.active_link{
+    color: #EC4700
+}
 
 .image {
     width: 8.2rem;
