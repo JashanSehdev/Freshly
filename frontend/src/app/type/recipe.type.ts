@@ -17,4 +17,10 @@ export interface Recipe {
   directions: Direction[];
   tags: string[];
   category: string;
+  user: User
 }   
+
+export type User = {
+  id : number,
+  username : string
+}

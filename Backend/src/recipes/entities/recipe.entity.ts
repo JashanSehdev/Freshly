@@ -1,8 +1,10 @@
 import {
   Column,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity.js';
 
 @Entity('recipes')
 export class Recipe {
@@ -35,4 +37,9 @@ export class Recipe {
 
   @Column({ type: 'varchar' })
   category: string;
+
+  @ManyToOne(() => User, (user) => user.recipes,  {
+    nullable: false,
+  })
+    user: User;
 }

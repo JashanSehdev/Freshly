@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto.js';
 import { UpdateRecipeDto } from './dto/update-recipe.dto.js';
 import { Recipe } from './entities/recipe.entity.js';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeFilterDto } from './dto/filtered-recipe-dto.js';
+import type { Request } from 'express';
+import { PassThrough } from 'stream';
+import { User } from '../users/entities/user.entity.js';
 
 @Injectable()
 export class RecipesService {
@@ -12,18 +15,14 @@ export class RecipesService {
     @InjectRepository(Recipe)
     private readonly recipeRepository: Repository<Recipe>,
   ) {}
-  async create(createRecipeDto: CreateRecipeDto) {
-    const recipe = this.recipeRepository.create(createRecipeDto);
+  async create(user : User,createRecipeDto: CreateRecipeDto) {
+    const recipe = this.recipeRepository.create({...createRecipeDto, user : user});
     return await this.recipeRepository.save(recipe);
   }
 
-  // async findAll() {
-    
-  //   return await this.recipeRepository.find()
-  // }
   async findAll(filters: RecipeFilterDto) {
   const query = this.recipeRepository
-    .createQueryBuilder("recipe");
+    .createQueryBuilder("recipe").leftJoinAndSelect("recipe.user", "user");
   
 
   if (filters.search) {
@@ -31,6 +30,15 @@ export class RecipesService {
       "recipe.title ILIKE :search",
       {
         search : `%${filters.search}%`
+      } 
+    )
+  }
+
+  if (filters.userId) {
+    query.andWhere(
+      "user.id = :userId",
+      {
+        userId :filters.userId
       } 
     )
   }
@@ -61,10 +69,12 @@ export class RecipesService {
     );
   }
 
-  return query.getMany();
+  return await query.getMany();
 }
   async findOne(id: number) {
-    return  await this.recipeRepository.findOneOrFail({ where: { id } }); 
+    return  await this.recipeRepository.findOneOrFail({ where: { id }, relations: {
+      user: true,
+    }, }); 
   
   }
 

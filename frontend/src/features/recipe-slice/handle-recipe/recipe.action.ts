@@ -62,12 +62,14 @@ type Params = {
   search ?: string,
   minCookingTime ?: number,
   maxCookingTime ?: number,
-  category ?: string
+  category ?: string,
+  userId ?: number
 
 }
 export const FetchRecipeByFilters = createAsyncThunk(
     'recipes/fetchRecipeByFilters',
     async ({
+      userId,
       search,
       minCookingTime,
       maxCookingTime,
@@ -76,6 +78,7 @@ export const FetchRecipeByFilters = createAsyncThunk(
         try {
             const response = await api.get('recipes',{
               params : {
+                userId,
                 search,
                 category,
                 minCookingTime,

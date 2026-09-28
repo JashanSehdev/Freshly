@@ -17,7 +17,7 @@ export default function Recipe ({params} : Prop) {
 }, [dispatch, id]);
     return(
         <Box>
-            <RecipePage/>
+            <RecipePage id={id}/>
         </Box>
     )
 }

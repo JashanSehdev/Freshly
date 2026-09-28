@@ -26,8 +26,14 @@ type Prop = {
 export default function EditRecipePage({ id }: Prop) {
   const recipe = useAppSelector((state) => state.recipe.recipe);
   const dispatch = useAppDispatch()
-
+  const user = useAppSelector((state) => state.user.User);
   console.log(recipe);
+
+  useEffect(() => {
+    if(user?.id !== recipe?.user.id) {
+      redirect("/")
+    }
+  },[])
 
   const handleCancel = () => {
     reset();

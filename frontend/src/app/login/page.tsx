@@ -1,34 +1,38 @@
 "use client";
 
-// import SubmitButton from "@/components/auth-components/buttons/buttons";
-// import {
-//   AuthInput,
-//   AuthPasswordInput,
-//   GoogleAuth,
-// } from "@/components/auth-components/input-field/inputs";
 import { Box, Button, TextField } from "@mui/material";
-import Image from "next/image";
 import styles from "./login.module.css";
-import { FormHelperText } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-// import { FormData } from "@/types/Form";
 import { useState } from "react";
-// import { handleEmailLogin } from "@/action/auth.action";
+import Link from "next/link";
+import { LoginInputType, loginSchema } from "./types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch } from "@/features/store";
+import { getUserAsync, LoginAsync } from "@/features/user-slice/handle-user/user.action";
+import Cookies from 'js-cookie';
+import { redirect } from "next/navigation";
 
-export default function Page() {
+
+export default function LoginPage() {
   const loginImage = 'https://imgs.search.brave.com/upaDKd9NNWpTUFEFHtxJm3Tn6YqpmUuYu_NNwvXMtr0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWcu/bWFnbmlmaWMuY29t/L2ZyZWUtcGhvdG8v/dG9wLXZpZXctdGFi/bGUtZnVsbC1mb29k/XzIzLTIxNDkyMDky/MzAuanBnP2dhPUdB/MS4xLjE2MjMxMzQ5/Ny4xNzkwNTUxODQ0/JnNlbXQ9YWlzX2h5/YnJpZCZ3PTc0MCZx/PTgw'
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
-  const {
+  const dispatch = useAppDispatch()
+   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<FormData>();
-
-  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    console.log("SUCCESS", data);
-  };
+  } = useForm<LoginInputType>({
+    resolver :zodResolver(loginSchema)
+  })
+  const onSubmit: SubmitHandler<LoginInputType> = async(data : LoginInputType) =>{
+    setLoading(true)
+    await dispatch(LoginAsync(data));
+    await dispatch(getUserAsync())
+    setLoading(false)
+    redirect('/')
+  }
 
   return (
     <Box className={styles.outerBox}>
@@ -44,30 +48,32 @@ export default function Page() {
 
         <p className={styles.divider}>or</p>
         <form className={styles.inputField} onSubmit={handleSubmit(onSubmit)}>
-          <Box>
-            {/* <AuthInput register={register} name="email" placeholder="Email" /> */}
-            
+          <Box>        
             <TextField
+            fullWidth
                 label="email"
-            />
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                {...register('email')}
+            />  
           </Box>
           <Box>
-            {/* <AuthPasswordInput
-              register={register}
-              name="password"
-              placeholder="Password"
-            /> */}
+
             <TextField 
+            fullWidth
                 type="password"
                 label="password"
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
             />
           </Box>
           <Box className={styles.submitButton}>
-            <Button type="submit">Login</Button>
+            <Button loading={loading} type="submit">Login</Button>
           </Box>
 
           <Box className={styles.subtitle}>
-            Don't have an account? <span>SignUp</span>
+            Do not have an account? <Link href={'/signup'}><span>Signup</span></Link>
           </Box>
         </form>
       </Box>

@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from './storage';
 import recipeReducer from './recipe-slice/recipe.slice'
+import userReducer from './user-slice/user.slice'
 import {
   FLUSH,
   REHYDRATE,
@@ -14,13 +15,14 @@ import {
   REGISTER,
 } from 'redux-persist';
 const rootReducer = combineReducers({
-    recipe : recipeReducer
+    recipe : recipeReducer,
+    user: userReducer
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist :['recipe']
+  whitelist :['recipe', 'user']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -22,5 +22,10 @@ export class RecipeFilterDto {
   @Type(() => Number)
   @IsNumber()
   maxCookingTime?: number;
+  
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  userId?: number;
 
 }

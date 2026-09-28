@@ -13,13 +13,10 @@ export default function HomePage() {
   const dispatch = useAppDispatch();
   const debounceSearch = debounce((value :string) => {
     dispatch(FetchRecipeByFilters({search: value}))
-  }, 1500)
+  }, 1000)
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
     const {value} = e.target;
-    if(value.length < 2) {
-      return
-    }
-    debounceSearch(value)
+    debounceSearch(value.trim())
   }
   return (
     <Box className={styles.container}>
