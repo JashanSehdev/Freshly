@@ -8,11 +8,12 @@ export const fetchRecipeById = createAsyncThunk<
   number,
   { rejectValue: string }
 >(
-  "fetchRecipe",
+  "fetchRecipe/fetch-by-id",
 
   async (id: number, thunkApi) => {
     try {
       const response = await api.get(`/recipes/${id}`);
+      console.log("fetch recipe by id")
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -90,4 +91,24 @@ export const FetchRecipeByFilters = createAsyncThunk(
       );
     }
     }
+)
+
+type UpdateData = {
+  id : number,
+  data : RecipeOutputType
+}
+export const updateRecipe = createAsyncThunk(
+  'recipes/update',
+  async({id, data} : UpdateData, thunkApi) => {
+    try {
+      const response = await api.put(`/recipes/${id}`, data);
+
+      return response.data
+
+    } catch(error : any) { 
+      return thunkApi.rejectWithValue(
+        error.response?.data || "Something went wrong",
+      )
+    }
+  }
 )

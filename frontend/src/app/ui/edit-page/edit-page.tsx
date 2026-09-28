@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createRecipe,
   fetchRecipeById,
+  updateRecipe,
 } from "@/features/recipe-slice/handle-recipe/recipe.action";
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import { enqueueSnackbar } from "notistack";
@@ -24,10 +25,7 @@ type Prop = {
 };
 export default function EditRecipePage({ id }: Prop) {
   const recipe = useAppSelector((state) => state.recipe.recipe);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchRecipeById(id));
-  }, []);
+  const dispatch = useAppDispatch()
 
   console.log(recipe);
 
@@ -53,7 +51,7 @@ export default function EditRecipePage({ id }: Prop) {
     data: RecipeOutputType,
   ) => {
     console.log(data);
-    await dispatch(createRecipe(data));
+    await dispatch(updateRecipe({id, data}));
     reset();
     enqueueSnackbar("Recipe published", { variant: "success" });
   };

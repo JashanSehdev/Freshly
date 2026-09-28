@@ -20,6 +20,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist :['recipe']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

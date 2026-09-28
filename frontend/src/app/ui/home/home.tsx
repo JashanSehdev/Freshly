@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import SimpleCard from "../cards/simple-card/simple-card";
 import { useAppDispatch, useAppSelector } from "@/features/store";
 import styles from "./home.module.css";
@@ -9,6 +9,7 @@ import { FetchRecipeByFilters } from "@/features/recipe-slice/handle-recipe/reci
 
 export default function HomePage() {
   const recipes = useAppSelector((state) => state.recipe.recipes);
+  console.log('recipes:', recipes)
   const dispatch = useAppDispatch();
   const debounceSearch = debounce((value :string) => {
     dispatch(FetchRecipeByFilters({search: value}))
@@ -41,6 +42,7 @@ export default function HomePage() {
             id={item.id}
           /> 
         ))}
+    
       </Box>
     </Box>
   );

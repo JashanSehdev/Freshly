@@ -68,8 +68,10 @@ export class RecipesService {
   
   }
 
-  update(id: number, updateRecipeDto: UpdateRecipeDto) {
-    return `This action updates a #${id} recipe`;
+  async update(id: number, updateRecipeDto: UpdateRecipeDto) {
+    console.log(id)
+    await this.recipeRepository.update(id, updateRecipeDto);
+    return await this.recipeRepository.findOneBy({id});
   }
 
   remove(id: number) {
