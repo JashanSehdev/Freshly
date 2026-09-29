@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { RecipesService } from './recipes.service.js';
 import { RecipesController } from './recipes.controller.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,6 +16,7 @@ import { JwtModule } from '@nestjs/jwt';
 export class RecipesModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
       consumer.apply(AuthMiddleware)
+      .exclude({ path: 'recipes', method: RequestMethod.GET })
       .forRoutes(RecipesController);
   }
 }
